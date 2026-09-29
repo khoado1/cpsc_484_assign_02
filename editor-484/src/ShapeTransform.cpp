@@ -45,6 +45,63 @@ glm::mat4 Shape::getModelMatrix() const {
     // Returning the identity leaves every shape at the origin, unrotated and
     // unscaled -- so the Insert menu still works and you can see your
     // geometry, which is the right place to start.
-    return glm::mat4(1.0f);
+
+    glm::mat4 T(
+        1.0f,   0.0f,   0.0f,   0.0f,
+        0.0f,   1.0f,   0.0f,   0.0f,
+        0.0f,   0.0f,   1.0f,   0.0f,
+        x,      y,      z,      1.0f
+    );
+
+    float rx = glm::radians(angleX);
+    float ry = glm::radians(angleY);
+    float rz = glm::radians(angleZ);
+
+    float cx = std::cos(rx);
+    float cy = std::cos(ry);
+    float cz = std::cos(rz);
+
+    float sx = std::sin(rx);
+    float sy = std::sin(ry);
+    float sz = std::sin(rz);
+
+    glm::mat4 Rotx(
+        1.0f,   0.0f,   0.0f,   0.0f,
+        0.0f,   cx,     sx,     0.0f,
+        0.0f,   -sx,    cx,     0.0f,
+        0.0f,   0.0f,   0.0f,   1.0f
+    );
+
+    glm::mat4 Roty(
+        cy,     0.0f,   -sy,    0.0f,
+        0.0f,   1.0f,   0.0f,   0.0f,
+        sy,     0.0f,   cy,     0.0f,
+        0.0f,   0.0f,   0.0f,   1.0f
+    );
+
+    glm::mat4 Rotz(
+        cz,     sz,     0.0f,   0.0f,
+        -sz,    cz,     0.0f,   0.0f,
+        0.0f,   0.0f,   1.0f,   0.0f,
+        0.0f,   0.0f,   0.0f,   1.0f
+    );
+
+    float sxv = scale;
+    float syv = scale;
+    float szv = scale;
+    
+    if (!useUniformScale) {
+        sxv = scaleX;
+        syv = scaleY;
+        szv = scaleZ;
+    }
+    glm::mat4 S(
+        sxv,   0.0f,   0.0f,   0.0f,
+        0.0f,   syv,   0.0f,   0.0f,
+        0.0f,   0.0f,   szv,   0.0f,
+        0.0f,   0.0f,   0.0f,   1.0f
+    );
+
+    return T * Rotz * Roty * Rotx * S;
 }
 

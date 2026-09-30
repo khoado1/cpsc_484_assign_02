@@ -45,5 +45,31 @@ void Shape::calculateNormals() {
     // scene renders, lit as though every surface were the ground. That is a
     // usable checkpoint, and fixing this one function lights up the Teapot,
     // the Torus and the Mobius strip all at once.
-    normals.assign(faces.size(), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    for (const auto & face: faces) {
+        if (face.size() != 3) {
+            // Handle non-triangular faces if necessary
+            continue;
+        }
+
+        const glm::vec3 & a = vertices[face[0]];
+        const glm::vec3 & b = vertices[face[1]];
+        const glm::vec3 & c = vertices[face[2]];
+
+        glm::vec3 edge1 = b - a;
+        glm::vec3 edge2 = c - a;
+
+        glm::vec3 normal = glm::cross(edge1, edge2);
+        auto length = glm::length(normal);
+
+        if (length > 0.0f) {
+            normal = glm::normalize(normal);
+        } else {
+            // Handle degenerate triangle case
+            normal = glm::vec3(0.0f, 1.0f, 0.0f); // Default normal
+        }
+
+        normals.push_back(normal);
+    }
+    // normals.assign(faces.size(), glm::vec3(0.0f, 1.0f, 0.0f));
 }

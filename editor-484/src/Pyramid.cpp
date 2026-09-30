@@ -32,11 +32,20 @@ void Pyramid::setupPyramid() {
     // editor runs, the Insert menu does something visible, and you can see
     // your geometry replace it as you write it. Read src/Torus.cpp first;
     // it is the worked example of a procedural shape.
-    vertices = { {-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},
-                 { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f} };
-    normals  = { {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
-                 {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f} };
-    faces    = { {0, 1, 2}, {0, 2, 3} };
+    vertices = { 
+        {-0.5f, 0.0f, -0.5f}, { 0.5f, 0.0f, -0.5f},
+        { 0.5f, 0.0f, 0.5f}, {-0.5f, 0.0f, 0.5f}, 
+        {0.0f, 1.0f, 0.0f} 
+    };
+    // normals  = { {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f},
+    //              {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f} };
+    faces    = { 
+        {0, 1, 2}, {0, 2, 3}, 
+        {0, 1, 4}, {1, 2, 4}, 
+        {2, 3, 4}, {3, 0, 4}
+    };
+
+    calculateNormals(); // Compute normals for the pyramid faces    
 
     // Build vertex data and index data for OpenGL
     

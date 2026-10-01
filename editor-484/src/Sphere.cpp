@@ -41,11 +41,43 @@ void Sphere::setupSphere() {
     // editor runs, the Insert menu does something visible, and you can see
     // your geometry replace it as you write it. Read src/Torus.cpp first;
     // it is the worked example of a procedural shape.
-    vertices = { {-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},
-                 { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f} };
-    normals  = { {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
-                 {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f} };
-    faces    = { {0, 1, 2}, {0, 2, 3} };
+
+    // vertices = { {-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},
+    //              { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f} };
+    // normals  = { {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
+    //              {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f} };
+    // faces    = { {0, 1, 2}, {0, 2, 3} };
+
+    for (unsigned int lat = 0; lat <= latitudeSegments; ++lat) {
+        for (unsigned int lon = 0; lon <= longitudeSegments; ++lon) {
+            float lonSegment = static_cast<float>(lon) / longitudeSegments;
+            float latSegment = static_cast<float>(lat) / latitudeSegments;
+
+            float xPos = radius * std::sin(latSegment * M_PI) * std::cos(lonSegment * 2.0f * M_PI);
+            float yPos = radius * std::cos(latSegment * M_PI);
+            float zPos = radius * std::sin(lonSegment * 2.0f * M_PI) * std::sin(latSegment * M_PI);
+
+            glm::vec3 position(xPos, yPos, zPos);
+            vertices.push_back(position);
+            normals.push_back(glm::normalize(position));
+        }
+    }
+    
+    for (unsigned int lat = 0; lat < latitudeSegments; ++lat) {
+        for (unsigned int lon = 0; lon < longitudeSegments; ++lon) {
+            unsigned int first = (lat * (longitudeSegments + 1)) + lon;
+            unsigned int second = first + longitudeSegments + 1;
+
+            faces.push_back({
+                static_cast<int>(first), 
+                static_cast<int>(second), 
+                static_cast<int>(first + 1)});
+            faces.push_back({
+                static_cast<int>(second), 
+                static_cast<int>(second + 1), 
+                static_cast<int>(first + 1)});
+        }
+    }
 
     // Prepare OpenGL buffers using the populated attributes
     std::vector<float> vertexData;

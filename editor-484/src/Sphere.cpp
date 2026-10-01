@@ -54,8 +54,8 @@ void Sphere::setupSphere() {
             float latSegment = static_cast<float>(lat) / latitudeSegments;
 
             float xPos = radius * std::sin(latSegment * M_PI) * std::cos(lonSegment * 2.0f * M_PI);
-            float yPos = radius * std::cos(latSegment * M_PI);
-            float zPos = radius * std::sin(lonSegment * 2.0f * M_PI) * std::sin(latSegment * M_PI);
+            float yPos = radius * std::sin(latSegment * M_PI) * std::sin(lonSegment * 2.0f * M_PI);
+            float zPos = radius * std::cos(latSegment * M_PI);
 
             glm::vec3 position(xPos, yPos, zPos);
             vertices.push_back(position);
